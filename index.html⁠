@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arabic Flashcards for Kids!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f0f8ff;
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --accent: #ffe66d;
+            --text-dark: #2d3436;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#d6e8f5 2px, transparent 2px);
+            background-size: 30px 30px;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #app-container {
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 0px var(--white), 4px 4px 0px rgba(0,0,0,0.1);
+        }
+
+        /* Home Screen */
+        #home-screen {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-btn {
+            background-color: var(--white);
+            border: 4px solid var(--secondary);
+            border-radius: 20px;
+            padding: 2rem;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.8rem;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-btn span {
+            font-size: 3rem;
+        }
+
+        .category-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+            background-color: var(--secondary);
+            color: var(--white);
+        }
+
+        /* Flashcard Screen */
+        #flashcard-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .top-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .icon-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            font-family: 'Fredoka', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            transition: 0.2s;
+        }
+        
+        .icon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .flashcard {
+            background: var(--white);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 30px;
+            padding: 3rem 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 6px solid var(--accent);
+            position: relative;
+        }
+
+        .flashcard.bounce {
+            animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .emoji-display {
+            font-size: 8rem;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .arabic-text {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .english-text {
+            font-size: 1.5rem;
+            color: #636e72;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: #f1f2f6;
+            padding: 5px 20px;
+            border-radius: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .nav-btn {
+            background-color: var(--secondary);
+            color: var(--white);
+            border: none;
+            border-radius: 15px;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            font-family: 'Fredoka', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #16a085;
+            transition: all 0.1s ease;
+        }
+
+        .nav-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #16a085;
+        }
+
+        .nav-btn:disabled {
+            background-color: #bdc3c7;
+            box-shadow: 0 6px 0 #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .emoji-display { font-size: 6rem; }
+            .arabic-text { font-size: 2.5rem; }
+            .english-text { font-size: 1.2rem; }
+            .nav-btn { padding: 10px 20px; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <!-- Home Screen -->
+        <div id="home-screen">
+            <h1 style="grid-column: 1 / -1;">Learn Levantine Arabic! ✨</h1>
+            <!-- Categories injected here via JS -->
+        </div>
+
+        <!-- Flashcard Screen -->
+        <div id="flashcard-screen">
+            <div class="top-bar">
+                <button class="icon-btn" onclick="goHome()">🏠 Home</button>
+                <div class="icon-btn" id="category-title" style="background: var(--accent); color: var(--text-dark);">Fruits</div>
+            </div>
+
+            <div class="flashcard" id="flashcard">
+                <div class="emoji-display" id="card-emoji">🍎</div>
+                <div class="arabic-text" id="card-arabic">تُفّاحة</div>
+                <div class="english-text" id="card-english">Toffaha</div>
+            </div>
+
+            <div class="controls">
+                <button class="nav-btn" id="btn-prev" onclick="prevCard()">⬅️ Prev</button>
+                <button class="nav-btn" id="btn-next" onclick="nextCard()">Next ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Structure for Flashcards
+        const flashcardData = {
+            "Fruits": [
+                { emoji: "🍎", ar: "تُفّاحة", en: "Toffaha" },
+                { emoji: "🍌", ar: "موزة", en: "Moza" },
+                { emoji: "🍊", ar: "برتقانة", en: "Burtuqana" },
+                { emoji: "🍉", ar: "بطيخة", en: "Bateekha" },
+                { emoji: "🍓", ar: "فراولة", en: "Farawla" }
+            ],
+            "Colors": [
+                { emoji: "🔴", ar: "أحمر", en: "Ahmar" },
+                { emoji: "🔵", ar: "أزرق", en: "Azraq" },
+                { emoji: "🟡", ar: "أصفر", en: "Asfar" },
+                { emoji: "🟢", ar: "أخضر", en: "Akhdar" },
+                { emoji: "🟣", ar: "نهدي", en: "Nahdi" }
+            ],
+            "Numbers": [
+                { emoji: "1️⃣", ar: "واحد", en: "Wahed" },
+                { emoji: "2️⃣", ar: "تنيين", en: "Tnein" },
+                { emoji: "3️⃣", ar: "تلاتة", en: "Tlata" },
+                { emoji: "4️⃣", ar: "أربعة", en: "Arba'a" },
+                { emoji: "5️⃣", ar: "خمسة", en: "Khamsa" }
+            ],
+            "Animals": [
+                { emoji: "🐶", ar: "كلب", en: "Kalb" },
+                { emoji: "🐱", ar: "بسة", en: "Bisseh" },
+                { emoji: "🐰", ar: "أرنب", en: "Arnab" },
+                { emoji: "🐮", ar: "بقرة", en: "Baqara" },
+                { emoji: "🐥", ar: "صوص", en: "Sous" }
+            ]
+        };
+
+        const categoryIcons = {
+            "Fruits": "🍎",
+            "Colors": "🎨",
+            "Numbers": "🔢",
+            "Animals": "🐾"
+        };
+
+        // State Variables
+        let currentCategory = null;
+        let currentIndex = 0;
+
+        // DOM Elements
+        const homeScreen = document.getElementById('home-screen');
+        const flashcardScreen = document.getElementById('flashcard-screen');
+        const flashcard = document.getElementById('flashcard');
+        const cardEmoji = document.getElementById('card-emoji');
+        const cardArabic = document.getElementById('card-arabic');
+        const cardEnglish = document.getElementById('card-english');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const categoryTitle = document.getElementById('category-title');
+
+        // Initialize App
+        function init() {
+            // Clear existing buttons (except h1)
+            const h1 = homeScreen.querySelector('h1');
+            homeScreen.innerHTML = '';
+            homeScreen.appendChild(h1);
+
+            // Generate Category Buttons
+            for (let category in flashcardData) {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn';
+                btn.innerHTML = `<span>${categoryIcons[category]}</span>${category}`;
+                btn.onclick = () => openCategory(category);
+                homeScreen.appendChild(btn);
+            }
+        }
+
+        function openCategory(category) {
+            currentCategory = category;
+            currentIndex = 0;
+            categoryTitle.innerText = `${categoryIcons[category]} ${category}`;
+            
+            homeScreen.style.display = 'none';
+            flashcardScreen.style.display = 'flex';
+            
+            updateCard();
+        }
+
+        function goHome() {
+            homeScreen.style.display = 'grid';
+            flashcardScreen.style.display = 'none';
+            currentCategory = null;
+        }
+
+        function updateCard() {
+            const data = flashcardData[currentCategory][currentIndex];
+            
+            // Trigger animation
+            flashcard.classList.remove('bounce');
+            void flashcard.offsetWidth; // trigger reflow
+            flashcard.classList.add('bounce');
+
+            // Update content
+            cardEmoji.innerText = data.emoji;
+            cardArabic.innerText = data.ar;
+            cardEnglish.innerText = data.en;
+
+            // Update button states
+            btnPrev.disabled = currentIndex === 0;
+            btnNext.disabled = currentIndex === flashcardData[currentCategory].length - 1;
+        }
+
+        function nextCard() {
+            if (currentIndex < flashcardData[currentCategory].length - 1) {
+                currentIndex++;
+                updateCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        }
+
+        // Run
+        init();
+    </script>
+</body>
+</html>
